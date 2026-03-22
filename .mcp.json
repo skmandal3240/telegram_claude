@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "telegram": {
+      "command": "bun",
+      "args": ["./telegram-channel.ts"],
+      "env": {
+        "TELEGRAM_BOT_TOKEN": "8603863638:AAGREcaFO7fXjRaR06bV41w1qTu0TU_vltg",
+        "ALLOWED_USER_IDS": "8631112837"
+      }
+    }
+  }
+}
