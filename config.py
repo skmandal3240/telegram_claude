@@ -5,17 +5,21 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
-# Claude Code OAuth: read token from file descriptor if available
-_oauth_fd = os.getenv("CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR")
+# Claude Code cloud: read session token for Bearer auth
+_SESSION_TOKEN_FILE = "/home/claude/.claude/remote/.session_ingress_token"
 AUTH_TOKEN = ""
-if _oauth_fd:
-    try:
-        with os.fdopen(int(_oauth_fd), "r", closefd=False) as f:
-            AUTH_TOKEN = f.read().strip()
-    except (OSError, ValueError):
-        pass
+USE_BEARER_AUTH = False
+
+try:
+    with open(_SESSION_TOKEN_FILE) as f:
+        AUTH_TOKEN = f.read().strip()
+    USE_BEARER_AUTH = True
+except FileNotFoundError:
+    pass
+
 if not AUTH_TOKEN:
     AUTH_TOKEN = os.getenv("ANTHROPIC_API_KEY", "")
+    USE_BEARER_AUTH = False
 
 BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
 

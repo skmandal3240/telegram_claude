@@ -1,8 +1,20 @@
+import httpx
 from anthropic import AsyncAnthropic
 
 import config
 
-_client = AsyncAnthropic(api_key=config.AUTH_TOKEN, base_url=config.BASE_URL)
+if config.USE_BEARER_AUTH:
+    # Claude Code cloud: use Bearer token auth instead of x-api-key
+    _http_client = httpx.AsyncClient(
+        headers={"Authorization": f"Bearer {config.AUTH_TOKEN}"},
+    )
+    _client = AsyncAnthropic(
+        api_key="bearer-auth",  # placeholder, overridden by header
+        base_url=config.BASE_URL,
+        http_client=_http_client,
+    )
+else:
+    _client = AsyncAnthropic(api_key=config.AUTH_TOKEN, base_url=config.BASE_URL)
 
 DEFAULT_SYSTEM = (
     "You are an AI automation assistant on Telegram. "
